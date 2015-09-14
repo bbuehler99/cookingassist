@@ -12,4 +12,10 @@ class RecipeType
 
 	public function setRecipeId($recipeId){ $this->recipeId = $recipeId;}
 	public function setTypeId($typeId){ $this->typeId = $typeId;}
+	
+	public function exchangeArray($data)
+	{
+        $this->recipeId     = (!empty($data['RecipeId'])) ? $data['RecipeId'] : null;
+        $this->typeId  = (!empty($data['TypeId'])) ? $data['TypeId'] : null;	    
+	}
 }

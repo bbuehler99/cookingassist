@@ -1,5 +1,6 @@
-<?php
 
+
+<?php
 $title = 'Neues Rezept hinzufügen';
 $this->headTitle($title);
 ?>
@@ -29,11 +30,21 @@ $this->headTitle($title);
  
  for($i=0;$i<$maxNumberOfSteps;++$i){
      ?><div id="Step<?php echo $i?>">
-      <?php
-     echo $this->formRow($form->get('StepQuantityValue'.$i));
-     echo $this->formRow($form->get('StepUnit'.$i));
-     echo $this->formRow($form->get('StepIngredient'.$i));
-     echo $this->formRow($form->get('StepText'.$i));
+     
+         <div id="singleStep<?php echo $i?>">
+          <?php
+         echo $this->formRow($form->get('StepQuantityValue'.$i));
+         echo $this->formRow($form->get('StepUnit'.$i));
+         echo $this->formRow($form->get('StepIngredients'.$i));
+         echo $this->formRow($form->get('StepText'.$i));
+         ?></div>
+         
+         <div id="multiStep<?php echo $i?>"><?php 
+         echo $this->formRow($form->get('MultiStepSelect'.$i));
+         ?></div>
+     
+     <?php 
+     echo $this->formRow($form->get('IsMultiStep'.$i));
      ?>
      </div>
       <?php   
@@ -46,12 +57,31 @@ $this->headTitle($title);
  
  echo $this->form()->closeTag();
  
- ?>
  
+ 
+ ?>
 
  
- <script>
+  <!-- chosen test
+ <select class="chosen">
+  <option value="volvo">Volvo</option>
+  <option value="saab">Saab</option>
+  <option value="opel">Opel</option>
+  <option value="audi">Audi</option>
+</select>
+-->
+ 
+ <script> 
  window.onload = show(2);
+ // do not display select for multistep recipes until button pressed
+ var i = 0;
+ var multiStepSelect = document.getElementById("multiStep"+i);
+ while(multiStepSelect != null){
+	 multiStepSelect.style.display="none";
+	 ++i;
+	 multiStepSelect = document.getElementById("multiStep"+i);
+ }
+ 
  function show(noOfVisibleSteps) {
 	 var i = 0;
 	 var currentStep = document.getElementById('Step'+i);
@@ -71,5 +101,25 @@ $this->headTitle($title);
 	 stepSelect.options[noOfVisibleSteps-1].selected = true;
 }
 
-
+ function switch_step(id){
+ 	var current = document.getElementById(id);
+ 	// get number of step
+ 	var index = id.slice(-1);
+ 	if(current.checked){
+ 	 	document.getElementById("singleStep"+index).style.display="none";
+ 	 	document.getElementById("multiStep"+index).style.display="block";
+	 }
+ 	else{
+ 	 	document.getElementById("singleStep"+index).style.display="block";
+ 	 	document.getElementById("multiStep"+index).style.display="none";
+//  	 	alert("unchecked");
+	 }
+ }
+</script>
+ <!-- src="/js/chosen.jquery.js"-->
+ <script>
+ jQuery(document).ready(function(){
+		jQuery('.chosen').chosen();
+		alert("1");
+	});
 </script>

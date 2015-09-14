@@ -16,12 +16,13 @@ use Zend\Form\Element\MultiCheckbox;
 use Zend\Form\Element\Textarea;
 use Zend\Form\Element;
 use Zend\Form\Element\Hidden;
+use Zend_Form_Element_Multiselect;
 
 class AddRecipeForm extends AddWorkflowForm
 {
     
     private $initialSteps = 2;
-    private $maxNoOfSteps = 20;
+    public $maxNoOfSteps = 20;
     
     public function __construct()
     {
@@ -31,7 +32,6 @@ class AddRecipeForm extends AddWorkflowForm
         $noOfPeopleElement->setLabel('Anzahl Personen');
         $this->add($noOfPeopleElement);
         
-        // Add Text for kcal.
         //TODO: Rescrict input to integers
         $kcalElement = new Text('Kcal');
         $kcalElement->setLabel('Anzahl Kalorien');
@@ -54,7 +54,7 @@ class AddRecipeForm extends AddWorkflowForm
         $restingTimeElement->setLabel('Ruhezeit');
         $this->add($restingTimeElement);
         
-        $types = $this->selectAllFrom('Types', 'Name');
+        $types = $this->selectAllFrom('Types','Id', 'Name');
         $typeElement = new MultiCheckbox('TypeId');
         $typeElement->setLabel('Rezept Typ');
         //$possibleValues = array('Sommermenu','Herbstmenu','Wintermenu','Frühlingsmenu');
@@ -62,7 +62,7 @@ class AddRecipeForm extends AddWorkflowForm
         $this->add($typeElement);
         
         
-        $levels = $this->selectAllFrom('Levels', 'Shortname');
+        $levels = $this->selectAllFrom('Levels', 'Value', 'Shortname');
         $levelElement = new Select('Level');
         $levelElement->setLabel('Schwierigkeit');
         $levelElement->setValueOptions($levels);/*array('einfach','schwierig'));*/
@@ -85,11 +85,15 @@ class AddRecipeForm extends AddWorkflowForm
         
 
     public function addSteps($number){
+        $units = $this->selectAllFrom('Units','Id','Name');
+        $ingredients = $this->selectAllFrom('Ingredients','Id', 'Name');
+        $recipeOptions = $this->selectAllFrom('Workflows','Id','Title');
+        
         for ($i=0;$i<$number;$i++){
-            $this->addStep($i);
+            $this->addStep($i,$units,$ingredients,$recipeOptions);
         }
     }
-    private function addStep($index){
+    private function addStep($index,$units,$ingredients,$recipeOptions){
         $stepIdElement = new Hidden('StepId'.$index);
         $stepIdElement->setValue($index);
         $this->add($stepIdElement);        
@@ -99,7 +103,7 @@ class AddRecipeForm extends AddWorkflowForm
         $quantityElement->setAttribute('id', 'StepQuantityValue'.$index);
         $this->add($quantityElement);
     
-        $units = $this->selectAllFrom('Units', 'Name');
+        
         $unitElement = new Select('StepUnit'.$index);
         $unitElement->setValueOptions($units);
         // need to set default value. otherwise null is saved.
@@ -107,17 +111,34 @@ class AddRecipeForm extends AddWorkflowForm
         $unitElement->setAttribute('id','StepUnit'.$index );
         $this->add($unitElement);
     
-        $ingredients = $this->selectAllFrom('Ingredients', 'Name');
-        $ingredientElement = new Select('StepIngredient'.$index);
+        
+        $ingredientElement = new Select('StepIngredients'.$index);
         $ingredientElement->setValueOptions($ingredients);
+        $ingredientElement->setAttribute('multiple', 'multiple');        
         //just set any default value. inserting ingredients has to be workes out anyway
         $ingredientElement->setValue(0);
-        $ingredientElement->setAttribute('id', 'StepIngredient'.$index);
+        $ingredientElement->setAttribute('id', 'StepIngredients'.$index);
         $this->add($ingredientElement);
     
         $textElement = new Textarea('StepText'.$index);
         $textElement->setAttribute('id', 'StepText'.$index);
         $this->add($textElement);
+        
+//         print_r($recipeOptions);
+//         $recipeOptions = $this->getRecipeNames();
+        $multiStepSelect = new Select('MultiStepSelect'.$index);
+        $multiStepSelect->setLabel("Rezept auswählen: ");
+        $multiStepSelect->setAttribute('id', 'MultiStepSelect'.$index);
+        $multiStepSelect->setValueOptions($recipeOptions);
+//         $multiStepSelect->setValue(0);
+        $this->add($multiStepSelect);
+        
+        $checkBoxElement = new Checkbox('IsMultiStep'.$index);
+        $checkBoxElement->setLabel("Ist ein Rezept");
+        $checkBoxElement->setAttribute('id', 'isMultiStep'.$index);
+//         $checkBoxElement->setValue(0);
+        $checkBoxElement->setAttribute('onclick', 'switch_step(this.id)');
+        $this->add($checkBoxElement);
     }
     public function getMaxNumberOfSteps(){
         return $this->maxNoOfSteps;
@@ -125,16 +146,25 @@ class AddRecipeForm extends AddWorkflowForm
     public function getInitialSteps(){
         return $this->initialSteps;
     }
-    private function selectAllFrom($table,$column){
+    private function selectAllFrom($table,$key,$column){
         $selectString = 'SELECT * FROM '.$table;
         $result = $this->getDbAdapter()->query($selectString,Adapter::QUERY_MODE_EXECUTE);
         // data will be a simple array conataining all values from table
         $data = array();
         foreach ($result as $row){
-            $data[]= $row[$column];
+            $id = $row[$key];
+            $content = $row[$column];
+            if (!empty($content)){
+                $data[$id]= $content;
+            }            
         }
+//         var_dump($data);
         return $data;
-        
+    }
+    private function getRecipeNames(){
+        $selectString = 'SELECT Recipes.Id,Workflows.Title FROM Workflows NATURAL JOIN Recipes';
+        $result = $this->getDbAdapter()->query($selectString,Adapter::QUERY_MODE_EXECUTE);
+        return $result->toArray();
     }
     
 

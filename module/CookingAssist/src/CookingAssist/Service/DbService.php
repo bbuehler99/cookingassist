@@ -36,7 +36,7 @@ class DbService
             throw new \Exception("Too many results when querying recipe");            
         }
         $recipe = new Recipe();
-        $recipe->exchangeArray($result->toArray()[0]);
+        $recipe->exchangeArray($result->toArray());
         return $recipe;
     }
 }

@@ -9,15 +9,17 @@ class Step
     public $quantityValue;
     public $quantityUnit;
     public $stepIngredient;
+    public $pictureId;
     
     
-    function create($isMultiStep, $stepQuantityValue,$stepQuantityUnit,$stepIngredient,$text){
+    function create($isMultiStep, $stepQuantityValue,$stepQuantityUnit,$stepIngredient,$text,$pictureId){
         $instance = new self();
         $this->isMultiStep = $isMultiStep;
         $this->quantityValue = $stepQuantityValue;
         $this->quantityUnit = $stepQuantityUnit;
         $this->stepIngredient = $stepIngredient;
         $this->text = $text;
+        $this->pictureId = $pictureId;
         return $instance;
     }
     
@@ -29,6 +31,7 @@ class Step
         $this->quantityValue = (!empty($data['StepQuantityValue'])) ? $data['StepQuantityValue'] : null;
         $this->quantityUnit = (!empty($data['StepUnit'])) ? $data['StepUnit'] : null;
         $this->stepIngredient  = (!empty($data['StepIngredient'])) ? $data['StepIngredient'] : null;
+        $this->pictureId  = (!empty($data['PictureId'])) ? $data['PictureId'] : null;
     }
     public function getArrayCopy()
     {

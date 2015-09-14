@@ -62,6 +62,11 @@ class CookingAssistController extends AbstractActionController
 //             echo "is post";
             $recipe = new Recipe();
             
+//             ini_set('xdebug.var_display_max_data', -1);
+//             ini_set('xdebug.var_display_max_depth', 5);
+//             ini_set('xdebug.var_display_max_children', 256);
+//             var_dump($_POST);
+            
             /* set filter: no content yet
 
             */
@@ -69,11 +74,7 @@ class CookingAssistController extends AbstractActionController
             $addRecipeForm->setData($request->getPost());
 
             if($addRecipeForm->isValid()){
-                
-            
-//                 print_r($addRecipeForm->getData());
-                $recipe->exchangeArray($addRecipeForm->getData());
-                $this->getAddRecipeTable()->saveRecipe($recipe);
+                $this->getAddRecipeTable()->saveRecipe($addRecipeForm->getData());
                  
                 // Redirect to index
 //                 return $this->redirect()->toRoute('cookingassist');
