@@ -8,6 +8,7 @@ use CookingAssist\Model\Workflow;
 use Zend\Stdlib\ArraySerializableInterface;
 
 use CookingAssist\Model\Step;
+use CookingAssist\Form\RecipeInputFilter;
 
 
 class Recipe extends Workflow 
@@ -78,78 +79,9 @@ class Recipe extends Workflow
     public function getInputFilter()
     {
         //TODO: implement
-        $inputFilter = new InputFilter();
+        $inputFilter = new RecipeInputFilter();
         $this->inputFilter = $inputFilter;
-//         if (!$this->inputFilter) {
-//             $inputFilter = new InputFilter();
-             
-//             $inputFilter->add(array(
-//                 'name'     => 'id',
-//                 'required' => true,
-//                 'filters'  => array(
-//                     array('name' => 'Int'),
-//                 ),
-//             ));
-
-//             $inputFilter->add(array(
-//                 'name'     => 'title',
-//                 'required' => true,
-//                 'filters'  => array(
-//                     array('name' => 'StripTags'),
-//                     array('name' => 'StringTrim'),
-//                 ),
-//                 'validators' => array(
-//                     array(
-//                         'name'    => 'StringLength',
-//                         'options' => array(
-//                             'encoding' => 'UTF-8',
-//                             'min'      => 1,
-//                             'max'      => 30,
-//                         ),
-//                     ),
-//                 ),
-//             ));
-//             $inputFilter->add(array(
-//                 'name'     => 'author',
-//                 'required' => true,
-//                 'filters'  => array(
-//                     array('name' => 'StripTags'),
-//                     array('name' => 'StringTrim'),
-//                 ),
-//                 'validators' => array(
-//                     array(
-//                         'name'    => 'StringLength',
-//                         'options' => array(
-//                             'encoding' => 'UTF-8',
-//                             'min'      => 1,
-//                             'max'      => 30,
-//                         ),
-//                     ),
-//                 ),
-//             ));
-//             $inputFilter->add(array(
-//                 'name'     => 'content',
-//                 'required' => true,
-//                 'filters'  => array(
-//                     array('name' => 'StripTags'),
-//                     array('name' => 'StringTrim'),
-//                 ),
-//                 'validators' => array(
-//                     array(
-//                         'name'    => 'StringLength',
-//                         'options' => array(
-//                             'encoding' => 'UTF-8',
-//                             'min'      => 1,
-//                             'max'      => 10000,
-//                         ),
-//                     ),
-//                 ),
-//             ));
-
-             
-//             $this->inputFilter = $inputFilter;
- //        }
-         
+     
         return $this->inputFilter;
     }
 

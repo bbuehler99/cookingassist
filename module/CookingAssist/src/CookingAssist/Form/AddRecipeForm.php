@@ -1,32 +1,29 @@
 <?php
 namespace CookingAssist\Form;
 
-use Zend\Form\Form;
 use CookingAssist\Form\AddWorkflowForm;
 use Zend\Form\Element\Text;
 use Zend\Form\Element\Select;
 use Zend\Form\Element\Checkbox;
 use Zend;
-use Zend\Form\Fieldset;
-use Zend\Form\Element\Collection;
-use Zend\Form\Element\Submit;
-use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Adapter;
 use Zend\Form\Element\MultiCheckbox;
 use Zend\Form\Element\Textarea;
-use Zend\Form\Element;
 use Zend\Form\Element\Hidden;
 use Zend_Form_Element_Multiselect;
+use CookingAssist\Util\Constants;
 
 class AddRecipeForm extends AddWorkflowForm
 {
     
     private $initialSteps = 2;
-    public $maxNoOfSteps = 20;
+    private $maxNoOfSteps;
     
     public function __construct()
     {
-        parent::__construct('AddRecipeForm');        
+        parent::__construct('AddRecipeForm'); 
+        
+        $this->maxNoOfSteps = Constants::$MAXNOOFSTEPS;
         
         $noOfPeopleElement = new Text('NoOfPeople');
         $noOfPeopleElement->setLabel('Anzahl Personen');
@@ -57,7 +54,6 @@ class AddRecipeForm extends AddWorkflowForm
         $types = $this->selectAllFrom('Types','Id', 'Name');
         $typeElement = new MultiCheckbox('TypeId');
         $typeElement->setLabel('Rezept Typ');
-        //$possibleValues = array('Sommermenu','Herbstmenu','Wintermenu','Frühlingsmenu');
         $typeElement->setValueOptions($types);
         $this->add($typeElement);
         

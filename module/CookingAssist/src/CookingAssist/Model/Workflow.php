@@ -21,6 +21,7 @@ class Workflow
     {
         return get_object_vars($this);
     }
+
 }
 
 ?>
